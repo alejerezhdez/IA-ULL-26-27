@@ -1,5 +1,5 @@
 #include "mapa.h"
-#include "fstream"
+#include <fstream>
 #include <sstream>
 
 Mapa::Mapa() :
@@ -32,4 +32,20 @@ Mapa::Mapa(int filas, int columnas, std::string fichero_entrada) {
     }
     contadorfilas++;
   }
+}
+
+const Estado Mapa::get_inicial() {
+  return Estado(estado_inicial_.first, estado_inicial_.second, nullptr);
+}
+
+const Estado Mapa::get_final() {
+  return Estado(estado_final_.first, estado_final_.second, nullptr);
+}
+
+const int Mapa::get_filas() {
+  return num_filas_;
+}
+
+const int Mapa::get_cols() {
+  return num_columnas_;
 }
