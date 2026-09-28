@@ -17,6 +17,9 @@ class Mapa {
 
     const int get_filas();
     const int get_cols();
+
+    const int at(int x, int y);
+
   private:
     int num_filas_;
     int num_columnas_;

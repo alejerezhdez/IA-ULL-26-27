@@ -26,33 +26,33 @@ void Search::expandir(const Estado& estado) {
   double minimo{4000};
   if(!salida_arriba) {
     Estado arriba(estado.get_coord().first - 1, estado.get_coord().second, &estado);
-    double f_arriba = eval(arriba);
+    double f_arriba = eval(arriba) + map_.at(estado.get_coord().first - 1, estado.get_coord().second);
     if (f_arriba <= minimo) {
       minimo = f_arriba;
     }
   }
 
   if(!salida_abajo) {
-    Estado abajo(estado.get_coord().first - 1, estado.get_coord().second, &estado);
-    double f_abajo = eval(abajo);
+    Estado abajo(estado.get_coord().first + 1, estado.get_coord().second, &estado);
+    double f_abajo = eval(abajo) + map_.at(estado.get_coord().first + 1, estado.get_coord().second);
     if (f_abajo <= minimo) {
       minimo = f_abajo;
     }
   }
 
   if(!salida_izq) {
-    Estado izq(estado.get_coord().first - 1, estado.get_coord().second, &estado);
-    double f_izq = eval(izq);
+    Estado izq(estado.get_coord().first, estado.get_coord().second - 1, &estado);
+    double f_izq = eval(izq) + map_.at(estado.get_coord().first, estado.get_coord().second - 1);
     if (f_izq <= minimo) {
       minimo = f_izq;
     }
   }
 
   if(!salida_der) {
-    Estado derecha(estado.get_coord().first - 1, estado.get_coord().second, &estado);
-    double f_derecha = eval(derecha);
+    Estado derecha(estado.get_coord().first, estado.get_coord().second + 1, &estado);
+    double f_derecha = eval(derecha) + map_.at(estado.get_coord().first, estado.get_coord().second + 1);
     if (f_derecha <= minimo) {
-      minimo = f_derecha;
+      minimo = f_derecha; 
     }
   }
 }

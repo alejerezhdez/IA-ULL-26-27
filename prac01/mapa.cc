@@ -49,3 +49,7 @@ const int Mapa::get_filas() {
 const int Mapa::get_cols() {
   return num_columnas_;
 }
+
+const int Mapa::at(int x, int y) {
+  return celdas_[x][y];
+}
