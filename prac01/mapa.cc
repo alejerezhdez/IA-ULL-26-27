@@ -5,9 +5,7 @@
 Mapa::Mapa() :
   num_filas_(1), num_columnas_(1), estado_inicial_(1,1), estado_final_(1,1) {}
 
-Mapa::Mapa(int filas, int columnas, std::string fichero_entrada) {
-  num_filas_ = filas;
-  num_columnas_ = columnas;
+Mapa::Mapa(std::string fichero_entrada) {
   std::ifstream input_file(fichero_entrada);
   std::string linea;
   int contadorfilas{1}, contadorcolumnas{1};

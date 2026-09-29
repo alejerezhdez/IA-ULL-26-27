@@ -1,16 +1,16 @@
+#ifndef MAPA_H
+#define MAPA_H
+
 #include <vector>
 #include <iostream>
 #include <utility>
 #include <string>
 #include "estado.h"
 
-#ifndef MAPA_H
-#define MAPA_H
-
 class Mapa {
   public:
     Mapa();
-    Mapa(int filas, int columnas, std::string fichero_entrada);
+    Mapa(std::string fichero_entrada);
 
     const Estado get_inicial();
     const Estado get_final();
