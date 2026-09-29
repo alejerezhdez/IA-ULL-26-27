@@ -17,6 +17,5 @@ int main(int argc, char* argv[]) {
   Mapa mapa(fichero_mapa);
   Search busqueda(mapa);
   busqueda.BusquedaA(fichero_traza, fichero_camino);
-
   return 0;
 }

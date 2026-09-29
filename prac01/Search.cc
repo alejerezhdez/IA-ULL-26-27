@@ -68,7 +68,7 @@ void Search::BusquedaA(const std::string& fichero_traza,
       imprimir_camino(std::cout);
       imprimir_camino(traza);
 
-      // fichero del mapa con * en el camino
+      // mapa con * en el camino: fichero y pantalla
       std::ofstream sal(fichero_camino);
       for (int i = 0; i < map_.get_filas(); ++i) {
         for (int j = 0; j < map_.get_cols(); ++j) {
@@ -76,12 +76,16 @@ void Search::BusquedaA(const std::string& fichero_traza,
                                      std::make_pair(i, j)) != camino.end();
           if (en_camino) {
             sal << "*";
+            std::cout << "*";
           } else {
             sal << map_.at(i, j);
+            std::cout << map_.at(i, j);
           }
           sal << (j + 1 < map_.get_cols() ? " " : "");
+          std::cout << (j + 1 < map_.get_cols() ? " " : "");
         }
         sal << "\n";
+        std::cout << "\n";
       }
       return;
     }
@@ -99,6 +103,7 @@ void Search::BusquedaA(const std::string& fichero_traza,
 }
 
 void Search::expandir(const Estado& estado) {
+
   int x = estado.get_coord().first;
   int y = estado.get_coord().second;
   std::pair<int, int> destino = map_.get_final().get_coord();
@@ -109,6 +114,7 @@ void Search::expandir(const Estado& estado) {
 
   for (int i = 0; i < 4; ++i) {
     int nx = x + dx[i], ny = y + dy[i];
+
     if (nx < 0 || nx >= map_.get_filas() || ny < 0 || ny >= map_.get_cols()) continue;
     if (map_.at(nx, ny) == -1) continue;
 
@@ -152,7 +158,7 @@ double Search::eval(const Estado& estado) {
 }
 
 void Search::imprimir_iteracion(int it, std::ostream& os) {
-  os << "Iteración " << it << "\n-----------\nAbiertos = ";
+  os << "Iteracion " << it << "\n-----------\nAbiertos = ";
   for (size_t i = 0; i < abiertos_.size(); ++i) {
     os << (i ? ", " : "") << "(" << abiertos_[i].get_coord().first + 1
        << "," << abiertos_[i].get_coord().second + 1 << ")";

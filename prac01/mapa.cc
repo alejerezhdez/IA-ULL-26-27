@@ -8,12 +8,12 @@ Mapa::Mapa() :
 Mapa::Mapa(std::string fichero_entrada) {
   std::ifstream input_file(fichero_entrada);
   std::string linea;
-  int contadorfilas{1}, contadorcolumnas{1};
+  int contadorfilas{0}, contadorcolumnas{0};
   while (std::getline(input_file, linea)) {
     std::istringstream ss(linea);
     std::vector<int> fila;
     int valor_celda;
-    contadorcolumnas = 1;
+    contadorcolumnas = 0;
     while (ss >> valor_celda) {
       if (valor_celda == 0) {
         estado_inicial_.first = contadorfilas;
@@ -30,6 +30,8 @@ Mapa::Mapa(std::string fichero_entrada) {
     }
     contadorfilas++;
   }
+  num_filas_ = celdas_.size();
+  num_columnas_ = celdas_.empty() ? 0 : celdas_[0].size();
 }
 
 const Estado Mapa::get_inicial() {
