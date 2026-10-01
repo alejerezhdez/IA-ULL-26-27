@@ -86,15 +86,15 @@ void Search::BusquedaA(const std::string& fichero_traza, const std::string& fich
         for (int j = 0; j < map_.get_cols(); ++j) {
           bool en_camino = std::find(camino.begin(), camino.end(), std::make_pair(i, j)) != camino.end();
           if (en_camino) {
-            sal << " *";
-            std::cout << " *";
+            sal << "\033[34m" << " *" << "\033[0m";
+            std::cout << "\033[34m" << " *" << "\033[0m";
           } else {
             if (map_.at(i,j) != -1) {
             sal << " " << map_.at(i, j);
             std::cout << " " << map_.at(i, j);
             } else {
-                sal << map_.at(i, j);
-                std::cout << map_.at(i, j);
+                sal << "\033[31m" << map_.at(i, j) << "\033[0m";
+                std::cout << "\033[31m" << map_.at(i, j) << "\033[0m";
             }
           }
           sal << (j + 1 < map_.get_cols() ? " " : "");
