@@ -10,12 +10,23 @@
 
 class Search {
   public:
+
+    // Constructor por defecto
     Search();
+
+    // Constructor por parametros
     Search(Mapa mapa);
 
+    // Metodo principal de la busqueda a*
     void BusquedaA(const std::string& fichero_traza = "traza.txt", const std::string& fichero_camino = "camino.txt");
+    
+    // Metodo para expandir un estado
     void expandir(const Estado& estado);
+    
+    // Metodo para evaluar el candidato optimo
     double eval(const Estado& estado);
+
+    // Metodo para imprimir una iteracion de la busqueda
     void imprimir_iteracion(int it, std::ostream& os);
 
   private:

@@ -6,14 +6,19 @@
 
 class Estado {
   public:
+
+    // Constructor
     Estado(int coord_x, int coord_y, const Estado* estado = nullptr);
     Estado();
 
+    // Getter de las coordenadas de un estado
     std::pair<int, int> get_coord() const;
     
+    // Setters
     void set_f(double f);
     void set_g(double g);
 
+    // Getters
     double get_f() const;
     double get_g() const;
 

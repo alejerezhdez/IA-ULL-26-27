@@ -9,15 +9,21 @@
 
 class Mapa {
   public:
+
+    // Constructor por defecto
     Mapa();
+
+    // Constructor
     Mapa(std::string fichero_entrada);
 
+    // Getters
     const Estado get_inicial();
     const Estado get_final();
 
     const int get_filas();
     const int get_cols();
 
+    // Metodo para acceder a una celda
     const int at(int x, int y);
 
   private:

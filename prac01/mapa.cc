@@ -5,6 +5,7 @@
 Mapa::Mapa() :
   num_filas_(1), num_columnas_(1), estado_inicial_(1,1), estado_final_(1,1) {}
 
+// Metodo que lee el fichero y crea el mapa donde se movera el robot
 Mapa::Mapa(std::string fichero_entrada) {
   std::ifstream input_file(fichero_entrada);
   std::string linea;
