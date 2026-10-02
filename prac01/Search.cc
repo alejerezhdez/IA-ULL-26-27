@@ -53,6 +53,10 @@ void Search::BusquedaA(const std::string& fichero_traza, const std::string& fich
       }
     }
 
+            std::cout << "2mejor nodo" << abiertos_[mejor2].get_f();
+
+            std::cout << "mejor nodo" << abiertos_[mejor].get_f();
+
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> distrib(0, 1);
@@ -60,10 +64,11 @@ void Search::BusquedaA(const std::string& fichero_traza, const std::string& fich
     int num_aleatorio = distrib(gen);
 
     if (num_aleatorio == 1) {
+      std::cout << "Se ha escogido el segundo mejor nodo" << std::endl;
       mejor = mejor2;
     }
 
-    std::cout << "El nodo escogido es: " << abiertos_[mejor].get_coord().first + 1 << "," << abiertos_[mejor].get_coord().second + 1 << std::endl;
+    std::cout << "El nodo escogido es: " << abiertos_[mejor].get_coord().first + 1 << "," << abiertos_[mejor].get_coord().second + 1 << "con valor" << abiertos_[mejor].get_f() << std::endl;
 
     // Incluimos el mejor nodo a cerrados y lo eliminamos de abiertos
     cerrados_.push_back(abiertos_[mejor]);
