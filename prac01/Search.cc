@@ -5,6 +5,7 @@
 #include <fstream>
 #include <iostream>
 #include <utility>
+#include <random>
 
 Search::Search() :
   map_(Mapa()) {}
@@ -23,7 +24,7 @@ void Search::BusquedaA(const std::string& fichero_traza, const std::string& fich
   Estado final = map_.get_final();
 
   // Abrimos el fichero que contiene el mapa
-  std::ofstream traza(fichero_traza);
+  std::ofstream traza(fichero_traza, std::ios::app);
 
   // Establecemos la g del nodo inicial a 0 y evaluamos sus vecinos
   inicial.set_g(0);
@@ -37,14 +38,32 @@ void Search::BusquedaA(const std::string& fichero_traza, const std::string& fich
   imprimir_iteracion(it, std::cout);
   imprimir_iteracion(it, traza);
 
-  while (!abiertos_.empty()) {
-    // Sacamos el de menor f
+  std::pair<int, int> nodo_centinela = inicial.get_coord();
+  while ((nodo_centinela.first != final.get_coord().first || nodo_centinela.second != final.get_coord().second)) {
+    // Sacamos el de menor f y el segundo
+
     size_t mejor = 0;
+    size_t mejor2 = 0;
     for (size_t i = 1; i < abiertos_.size(); ++i) {
       if (abiertos_[i].get_f() < abiertos_[mejor].get_f()) {
+        mejor2 = mejor;
         mejor = i;
+      } else if (abiertos_[i].get_f() < abiertos_[mejor2].get_f()) {
+          mejor2 = i;
       }
     }
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> distrib(0, 1);
+
+    int num_aleatorio = distrib(gen);
+
+    if (num_aleatorio == 1) {
+      mejor = mejor2;
+    }
+
+    std::cout << "El nodo escogido es: " << abiertos_[mejor].get_coord().first + 1 << "," << abiertos_[mejor].get_coord().second + 1 << std::endl;
 
     // Incluimos el mejor nodo a cerrados y lo eliminamos de abiertos
     cerrados_.push_back(abiertos_[mejor]);
@@ -52,9 +71,12 @@ void Search::BusquedaA(const std::string& fichero_traza, const std::string& fich
 
     // Establecemos el ultimo nodo revisado como el actual
     const Estado& actual = cerrados_.back();
+    nodo_centinela.first = actual.get_coord().first;
+    nodo_centinela.second = actual.get_coord().second;
 
     // Miramos si es el nodo final
     if (actual.get_coord() == final.get_coord()) {
+      std::cout << "Es el nodo final terminando" << std::endl;
       ++it;
       imprimir_iteracion(it, std::cout);
       imprimir_iteracion(it, traza);
@@ -75,13 +97,14 @@ void Search::BusquedaA(const std::string& fichero_traza, const std::string& fich
              << "," << camino[i].second + 1 << ")";
         }
         os << "\nCoste: " << actual.get_g() << std::endl;
+        os << std::endl;
       };
 
       imprimir_camino(std::cout);
       imprimir_camino(traza);
 
       // Imprimir el mapa 
-      std::ofstream sal(fichero_camino);
+      std::ofstream sal(fichero_camino, std::ios::app);
       for (int i = 0; i < map_.get_filas(); ++i) {
         for (int j = 0; j < map_.get_cols(); ++j) {
           bool en_camino = std::find(camino.begin(), camino.end(), std::make_pair(i, j)) != camino.end();
@@ -155,7 +178,7 @@ void Search::expandir(const Estado& estado) {
       if (c.get_coord() == v.get_coord()) { repetido = true; break; }
     }
     if (repetido) continue;
-
+    
     // Si ya está en abiertos_: reemplazar si el nuevo g es menor, si no ignorar
     auto it = std::find_if(abiertos_.begin(), abiertos_.end(), [&](const Estado& a) { return a.get_coord() == v.get_coord(); });
     if (it != abiertos_.end()) {
