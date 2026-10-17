@@ -9,8 +9,12 @@ class Instance {
     Instance();
     Instance(std::string fichero);
 
-    int cmax(std::vector<int> permutacion);
-    
+    int get_trabajos() const { return n_trabajos_; }
+    int get_maquinas() const { return n_maquinas_; }
+    int get_tiempo(int x, int y) const { return tiempos_[x][y]; }
+
+    int cmax(const std::vector<int>& permutacion) const;
+
   private:
     int n_trabajos_;
     int n_maquinas_;
@@ -18,3 +22,4 @@ class Instance {
 };
 
 #endif
+
