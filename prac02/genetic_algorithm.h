@@ -6,6 +6,7 @@
 #include <numeric>
 #include <algorithm>
 #include <random>
+#include <cstdlib>
 
 class GeneticAlgorithm {
   public:
@@ -13,7 +14,8 @@ class GeneticAlgorithm {
 
     void inicializar();
     int seleccion();
-    void cruceOX(int p1, int p2);
+    void cruceOX(int indice_p1, int indice_p2);
+    std::vector<int> construirHijo(const std::vector<int>& donante_segmento, const std::vector<int>& donante_relleno, int a, int b);
     void mutacion(int h);
     void reemplazo();
     bool es_factible(const std::vector<int>& permutacion);
