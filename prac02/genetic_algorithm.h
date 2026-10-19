@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <random>
 #include <cstdlib>
+#include <cassert>
 
 class GeneticAlgorithm {
   public:
@@ -19,7 +20,7 @@ class GeneticAlgorithm {
     void mutacion(int h);
     void reemplazo();
     bool es_factible(const std::vector<int>& permutacion);
-    void run();
+    std::vector<int> run();
 
   private:
     const Instance& instancia_;

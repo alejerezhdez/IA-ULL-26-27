@@ -170,7 +170,40 @@ bool GeneticAlgorithm::es_factible(const std::vector<int>& permutacion) {
   }
   return true;
 }
-
-void GeneticAlgorithm::run() {
+std::vector<int> GeneticAlgorithm::run() {
   inicializar();
+
+  while (evaluaciones_ < max_evaluaciones_) {
+    hijos_.clear();
+    makespans_hijos_.clear();
+
+    while (hijos_.size() < static_cast<std::size_t>(tam_poblacion_) && evaluaciones_ < max_evaluaciones_) {
+      int p1 = seleccion();
+      int p2 = seleccion();
+
+      cruceOX(p1, p2);
+
+      int h1 = static_cast<int>(hijos_.size()) - 2;
+      int h2 = static_cast<int>(hijos_.size()) - 1;
+
+      mutacion(h1);
+      assert(es_factible(hijos_[h1]));
+      mutacion(h2);
+      assert(es_factible(hijos_[h2]));
+
+      makespans_hijos_.push_back(instancia_.cmax(hijos_[h1]));
+      evaluaciones_++;
+      makespans_hijos_.push_back(instancia_.cmax(hijos_[h2]));
+      evaluaciones_++;
+    }
+
+    if (hijos_.size() < static_cast<std::size_t>(tam_poblacion_)) break;
+
+    // Por si el tamaño de la población es impar
+    hijos_.resize(tam_poblacion_);
+    makespans_hijos_.resize(tam_poblacion_);
+
+    reemplazo();
+  }
+  return mejor_individuo_;
 }
