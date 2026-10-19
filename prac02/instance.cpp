@@ -3,7 +3,7 @@
 #include <sstream>
 
 Instance::Instance() :
-  n_trabajos_(0), n_maquinas_(0) {}
+  n_trabajos_(0), n_maquinas_(0), semilla_(0) {}
 
 Instance::Instance(std::string fichero) {
   std::string linea;
@@ -11,16 +11,23 @@ Instance::Instance(std::string fichero) {
   std::ifstream input_file(fichero);
   std::getline(input_file, linea);
 
-  std::istringstream iss(linea);
-  int n_jobs{0}, n_machines{0};
+  std::getline(input_file, linea);
 
-  iss >> n_jobs >> n_machines;
+  std::istringstream iss(linea);
+  int n_jobs{0}, n_machines{0}, semilla{0}, upper_bound{0}, lower_bound{0};
+
+  iss >> n_jobs >> n_machines >> semilla >> upper_bound >> lower_bound;
 
   n_trabajos_ = n_jobs;
   n_maquinas_ = n_machines;
+  semilla_ = semilla;
+  upper_bound_ = upper_bound;
+  lower_bound_ = lower_bound;
 
   tiempos_.resize(n_maquinas_, std::vector<int>(n_trabajos_));
 
+  std::getline(input_file, linea);
+  
   for (int i{0}; i < n_trabajos_; i++) {
     std::getline(input_file, linea);
     std::istringstream lineas_matriz(linea);

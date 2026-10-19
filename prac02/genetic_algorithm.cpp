@@ -89,3 +89,64 @@ std::vector<int> GeneticAlgorithm::construirHijo(const std::vector<int>& donante
   return hijo;
 }
 
+void GeneticAlgorithm::mutacion(int h) {
+  std::uniform_real_distribution<double> p(0.0, 1.0);
+  if (p(generador_) >= prob_mutacion_) {
+    return;
+  }
+  
+  std::uniform_int_distribution<int> dist(0, instancia_.get_trabajos() - 1);
+  int cota1 = dist(generador_);
+  int cota2 = dist(generador_);
+  
+  if (cota1 > cota2) {
+    std::swap(cota1, cota2);
+  }
+
+  std::bernoulli_distribution moneda(0.5);
+  if (moneda(generador_)) {
+    int trabajo = hijos_[h][cota1];
+    hijos_[h].erase(hijos_[h].begin() + cota1);
+    hijos_[h].insert(hijos_[h].begin() + cota2, trabajo);
+  } else {
+    std::swap(hijos_[h][cota1], hijos_[h][cota2]);
+  }
+}
+
+void GeneticAlgorithm::reemplazo() {
+  int pos_peor{0};
+  int peor_cmax{-1};
+  for (int i{0}; i < makespans_hijos_.size(); i++) {
+    if (makespans_hijos_[i] > peor_cmax) {
+      pos_peor = i;
+      peor_cmax = makespans_hijos_[i];
+    }
+  }
+
+  int pos_mejor_pob{0};
+  int mejor_cmax_pob{INFINITO};
+  for (int j{0}; j < makespan_.size(); j++) {
+    if (makespan_[j] < mejor_cmax_pob) {
+      pos_mejor_pob = j;
+      mejor_cmax_pob = makespan_[j];
+    }
+  }
+
+  if (mejor_cmax_pob < peor_cmax) {
+    hijos_[pos_peor] = poblacion_[pos_mejor_pob];
+    makespans_hijos_[pos_peor] = makespan_[pos_mejor_pob];
+  }
+
+  poblacion_ = hijos_;
+  makespan_ = makespans_hijos_;
+
+  hijos_.clear();
+  makespans_hijos_.clear();
+
+  for (int k{0}; k < poblacion_.size(); k++) {
+    if (makespan_[k] < mejor_cmax_) {
+      mejor_cmax_ = makespan_[k];
+      mejor_individuo_ = poblacion_[k];
+    }
+  }
+}
