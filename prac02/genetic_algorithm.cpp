@@ -150,3 +150,27 @@ void GeneticAlgorithm::reemplazo() {
     }
   }
 }
+
+bool GeneticAlgorithm::es_factible(const std::vector<int>& permutacion) {
+  int n = instancia_.get_trabajos();
+  if (static_cast<int>(permutacion.size()) != n) {
+    return false;
+  }
+
+  std::vector<bool> visto(n, false);
+  for (int i{0}; i < n; i++) {
+    int trabajo = permutacion[i];
+    if (trabajo < 0 || trabajo >= n) {
+      return false;               
+    }
+    if (visto[trabajo]) {
+      return false;               
+    }
+    visto[trabajo] = true;
+  }
+  return true;
+}
+
+void GeneticAlgorithm::run() {
+  inicializar();
+}

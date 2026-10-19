@@ -19,6 +19,7 @@ class GeneticAlgorithm {
     void mutacion(int h);
     void reemplazo();
     bool es_factible(const std::vector<int>& permutacion);
+    void run();
 
   private:
     const Instance& instancia_;
