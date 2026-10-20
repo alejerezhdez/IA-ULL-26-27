@@ -1,6 +1,7 @@
 #include "instance.h"
 #include <fstream>
 #include <sstream>
+#include <iostream>
 
 Instance::Instance() :
   n_trabajos_(0), n_maquinas_(0), semilla_(0) {}
@@ -9,6 +10,9 @@ Instance::Instance(std::string fichero) {
   std::string linea;
 
   std::ifstream input_file(fichero);
+  if (!input_file.is_open()) {
+    std::cout << "Error archivo no abierto";
+  }
   std::getline(input_file, linea);
 
   std::getline(input_file, linea);
@@ -24,17 +28,17 @@ Instance::Instance(std::string fichero) {
   upper_bound_ = upper_bound;
   lower_bound_ = lower_bound;
 
-  tiempos_.resize(n_maquinas_, std::vector<int>(n_trabajos_));
+  tiempos_.assign(n_trabajos_, std::vector<int>(n_maquinas_));   // [trabajo][maquina]
 
-  std::getline(input_file, linea);
-  
-  for (int i{0}; i < n_trabajos_; i++) {
+      std::getline(input_file, linea);   // cabecera "processing times"
+
+  for (int j{0}; j < n_maquinas_; j++) {        // una línea por máquina
     std::getline(input_file, linea);
     std::istringstream lineas_matriz(linea);
-    for (int j{0}; j < n_maquinas_; j++) {
+    for (int i{0}; i < n_trabajos_; i++) {      // n tiempos por línea
       lineas_matriz >> tiempos_[i][j];
     }
-  }
+  }  
 }
 
 int Instance::cmax(const std::vector<int>& permutacion) const {
