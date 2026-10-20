@@ -1,4 +1,5 @@
 #include <iostream>
+#include <filesystem>
 #include "instance.h"
 #include "genetic_algorithm.h"
 
@@ -17,19 +18,35 @@ int main (int argc, char* argv[]) {
   tamano_tor = std::stoi(argv[5]);
   presupuesto = std::stoi(argv[6]);
   semilla = std::stoi(argv[7]);
+  bool permutacion;
+  std::string escribirpermutacion = "-v";
+  if (argc == 9 && argv[8] == escribirpermutacion) {
+    permutacion = true;
+  } else  {
+    permutacion = false;
+  }
 
-  std::cout << "Leyendo fichero: " << fichero << std::endl;
   Instance instancia(fichero);
-  std::cout << "Instancia creada" << std::endl;
   GeneticAlgorithm algoritmo(instancia, tamano_pob, pc, pm, tamano_tor, presupuesto, semilla);
 
   std::vector<int> mejor_caso = algoritmo.run();
 
-  for(int i{0}; i < mejor_caso.size(); i++) {
-    std::cout << mejor_caso[i] + 1 << " ";
-     
+  if(permutacion) {
+    for(int i{0}; i < mejor_caso.size(); i++) {
+      std::cout << mejor_caso[i] + 1 << " ";
+    }
+    std::cout << std::endl;
   }
-  std::cout << std::endl;
-  std::cout << "Mejor makespan: " << instancia.cmax(mejor_caso) << std::endl;
+
+  int cmax = instancia.cmax(mejor_caso);
+  int upper_bound = instancia.get_upper_bound();
+
+  std::cout << upper_bound;
+
+  double rpd = 100.0 * (cmax - upper_bound) / upper_bound;
+   
+  std::string nombre = std::filesystem::path(fichero).stem().string();
+
+  std::cout << nombre << " " << semilla << " " << cmax << std::endl;
   return 0;
 }

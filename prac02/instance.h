@@ -14,7 +14,8 @@ class Instance {
     int get_tiempo(int x, int y) const { return tiempos_[x][y]; }
     int get_semilla() { return semilla_; }
     int cmax(const std::vector<int>& permutacion) const;
-
+    int get_upper_bound() { return upper_bound_; }
+    int get_lower_bound() { return lower_bound_; }
 
   private:
     int n_trabajos_;

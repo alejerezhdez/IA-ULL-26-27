@@ -98,10 +98,6 @@ void GeneticAlgorithm::mutacion(int h) {
   std::uniform_int_distribution<int> dist(0, instancia_.get_trabajos() - 1);
   int cota1 = dist(generador_);
   int cota2 = dist(generador_);
-  
-  if (cota1 > cota2) {
-    std::swap(cota1, cota2);
-  }
 
   std::bernoulli_distribution moneda(0.5);
   if (moneda(generador_)) {
@@ -170,6 +166,7 @@ bool GeneticAlgorithm::es_factible(const std::vector<int>& permutacion) {
   }
   return true;
 }
+
 std::vector<int> GeneticAlgorithm::run() {
   inicializar();
 

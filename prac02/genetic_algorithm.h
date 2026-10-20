@@ -33,6 +33,7 @@ class GeneticAlgorithm {
     std::mt19937 generador_;
     std::vector<int> mejor_individuo_;
     int mejor_cmax_;
+
     
     std::vector<std::vector<int>> hijos_;
     std::vector<int> makespans_hijos_;
