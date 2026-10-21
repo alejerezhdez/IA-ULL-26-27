@@ -11,13 +11,12 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 # Warnings útiles; en Debug, con símbolos para depurar y los assert activos
-add_compile_options(-Wall -Wextra)
 set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
 # Release: optimizado y con -DNDEBUG (desactiva los assert)
 set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG")
 
 add_executable(pfsp
-  main.cc
-  instance.cc
-  genetic_algorithm.cc
+  main.cpp
+  instance.cpp
+  genetic_algorithm.cpp
 )

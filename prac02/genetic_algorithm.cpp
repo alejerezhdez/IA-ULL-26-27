@@ -2,16 +2,59 @@
 
 static constexpr int INFINITO = 1000000000;
 
-GeneticAlgorithm::GeneticAlgorithm(const Instance& instancia, int tam_poblacion, double pc, double pm, int tam_torneo, int max_evaluaciones, unsigned semilla) :
-  instancia_(instancia), tam_poblacion_(tam_poblacion), prob_cruce_(pc), prob_mutacion_(pm), tam_torneo_(tam_torneo), max_evaluaciones_(max_evaluaciones), generador_(semilla) {}
+GeneticAlgorithm::GeneticAlgorithm(const Instance& instancia, int tam_poblacion, double pc, double pm, int tam_torneo, int max_evaluaciones, unsigned semilla, bool neh) :
+  instancia_(instancia), tam_poblacion_(tam_poblacion), prob_cruce_(pc), prob_mutacion_(pm), tam_torneo_(tam_torneo), max_evaluaciones_(max_evaluaciones), generador_(semilla), neh_(neh) {}
+
+std::vector<int> GeneticAlgorithm::neh() {
+  int n = instancia_.get_trabajos();
+  int m = instancia_.get_maquinas();
+
+  // 1. Ordenar los trabajos por suma de tiempos, de mayor a menor
+  std::vector<int> suma(n, 0);
+  for (int j{0}; j < n; j++) {
+    for (int i{0}; i < m; i++) {
+      suma[j] += instancia_.get_tiempo(j, i);
+    }
+  }
+  std::vector<int> orden(n);
+  std::iota(orden.begin(), orden.end(), 0);
+  std::stable_sort(orden.begin(), orden.end(),
+                   [&](int a, int b) { return suma[a] > suma[b]; });
+
+  // 2. Insertar cada trabajo en la mejor posición de la secuencia actual
+  std::vector<int> secuencia;
+  for (int trabajo : orden) {
+    int mejor_pos{0};
+    int mejor_ms{INFINITO};
+    for (int pos{0}; pos <= static_cast<int>(secuencia.size()); pos++) {
+      secuencia.insert(secuencia.begin() + pos, trabajo);
+      int ms = instancia_.cmax(secuencia);
+      evaluaciones_++;
+      secuencia.erase(secuencia.begin() + pos);
+      if (ms < mejor_ms) {        // en empate se queda la primera posición
+        mejor_ms = ms;
+        mejor_pos = pos;
+      }
+    }
+    secuencia.insert(secuencia.begin() + mejor_pos, trabajo);
+  }
+  return secuencia;
+}
+
 
 void GeneticAlgorithm::inicializar() {
   int pos_mejor{0};
   int mejorcmax{INFINITO};
   for (int i{0}; i < tam_poblacion_; i++) {
-    std::vector<int> auxiliar(instancia_.get_trabajos());
-    std::iota(auxiliar.begin(), auxiliar.end(), 0);
-    std::shuffle(auxiliar.begin(), auxiliar.end(), generador_);
+    
+    std::vector<int> auxiliar;
+    if(neh_ && i == 0) {
+     auxiliar = neh();
+    } else {
+      auxiliar.resize(instancia_.get_trabajos());
+      std::iota(auxiliar.begin(), auxiliar.end(), 0);
+      std::shuffle(auxiliar.begin(), auxiliar.end(), generador_);
+    }
 
     int cmax_temp = instancia_.cmax(auxiliar);
     if (cmax_temp < mejorcmax) {
@@ -204,3 +247,5 @@ std::vector<int> GeneticAlgorithm::run() {
   }
   return mejor_individuo_;
 }
+
+

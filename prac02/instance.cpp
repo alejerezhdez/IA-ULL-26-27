@@ -42,14 +42,15 @@ Instance::Instance(std::string fichero) {
 }
 
 int Instance::cmax(const std::vector<int>& permutacion) const {
-  std::vector<std::vector<int>> matriz_aux(n_trabajos_ + 1, std::vector<int>(n_maquinas_ + 1, 0));
+  int n = static_cast<int>(permutacion.size());   // cambio 1: tamaño real
+  std::vector<std::vector<int>> matriz_aux(n + 1, std::vector<int>(n_maquinas_ + 1, 0));   // cambio 2
 
-  for(int i{1}; i <= get_trabajos(); i++) {
+  for (int i{1}; i <= n; i++) {                   // cambio 3
     int trabajo = permutacion[i - 1];
     for (int j{1}; j <= n_maquinas_; j++) {
       matriz_aux[i][j] = std::max(matriz_aux[i - 1][j], matriz_aux[i][j - 1]) + get_tiempo(trabajo, j - 1);
     }
-  } 
+  }
 
-  return matriz_aux[get_trabajos()][get_maquinas()];
+  return matriz_aux[n][n_maquinas_];              // cambio 4: última fila real
 }

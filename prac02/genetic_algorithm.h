@@ -11,8 +11,9 @@
 
 class GeneticAlgorithm {
   public:
-    GeneticAlgorithm(const Instance& instancia, int tam_poblacion, double pc, double pm, int tam_torneo, int max_evaluaciones, unsigned semilla);
+    GeneticAlgorithm(const Instance& instancia, int tam_poblacion, double pc, double pm, int tam_torneo, int max_evaluaciones, unsigned semilla, bool neh);
 
+    std::vector<int> neh();
     void inicializar();
     int seleccion();
     void cruceOX(int indice_p1, int indice_p2);
@@ -21,6 +22,7 @@ class GeneticAlgorithm {
     void reemplazo();
     bool es_factible(const std::vector<int>& permutacion);
     std::vector<int> run();
+
 
   private:
     const Instance& instancia_;
@@ -33,7 +35,7 @@ class GeneticAlgorithm {
     std::mt19937 generador_;
     std::vector<int> mejor_individuo_;
     int mejor_cmax_;
-
+    bool neh_;
     
     std::vector<std::vector<int>> hijos_;
     std::vector<int> makespans_hijos_;
