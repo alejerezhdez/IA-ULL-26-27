@@ -44,21 +44,23 @@ int main (int argc, char* argv[]) {
     std::cout << std::endl;
   }
 
-  int cmax = instancia.cmax(mejor_caso);
+int cmax = instancia.cmax(mejor_caso);
 int upper_bound = instancia.get_upper_bound();
 int cmax_neh = instancia.cmax(algoritmo.neh());   // fuera del tiempo medido
 
 std::string nombre = std::filesystem::path(fichero).stem().string();
 
 // Añade una fila a resultados.csv (con cabecera si el fichero no existe)
-std::string ruta_csv = "resultados.csv";
+std::string ruta_csv = "traza.csv";
 bool existe = std::filesystem::exists(ruta_csv);
 std::ofstream csv(ruta_csv, std::ios::app);
 if (!existe) {
-  csv << "instancia,n,m,semilla,cmax,ub,neh,tiempo_cpu\n";
+  csv << "instancia,n,m,cmax,ub,neh,tiempo_cpu\n";
 }
+
+double cmax_minimo = std::min<double>(cmax, cmax_minimo);
 csv << nombre << "," << instancia.get_trabajos() << "," << instancia.get_maquinas() << ","
-    << semilla << "," << cmax << "," << upper_bound << "," << cmax_neh << ","
+    << cmax << "," << upper_bound << "," << cmax_neh << ","
     << std::fixed << std::setprecision(3) << tiempo_cpu << "\n";
 
 std::cout << nombre << " " << semilla << " " << cmax << std::endl;
