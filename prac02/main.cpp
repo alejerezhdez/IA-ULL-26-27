@@ -1,5 +1,8 @@
 #include <iostream>
 #include <filesystem>
+#include <iomanip>
+#include <ctime>
+#include <fstream>
 #include "instance.h"
 #include "genetic_algorithm.h"
 
@@ -30,7 +33,9 @@ int main (int argc, char* argv[]) {
   Instance instancia(fichero);
   GeneticAlgorithm algoritmo(instancia, tamano_pob, pc, pm, tamano_tor, presupuesto, semilla, use_neh);
 
+  std::clock_t inicio = std::clock();
   std::vector<int> mejor_caso = algoritmo.run();
+  double tiempo_cpu = static_cast<double>(std::clock() - inicio) / CLOCKS_PER_SEC;
 
   if(permutacion) {
     for(int i{0}; i < mejor_caso.size(); i++) {
@@ -40,12 +45,22 @@ int main (int argc, char* argv[]) {
   }
 
   int cmax = instancia.cmax(mejor_caso);
-  int upper_bound = instancia.get_upper_bound();
+int upper_bound = instancia.get_upper_bound();
+int cmax_neh = instancia.cmax(algoritmo.neh());   // fuera del tiempo medido
 
-  double rpd = 100.0 * (cmax - upper_bound) / upper_bound;
+std::string nombre = std::filesystem::path(fichero).stem().string();
 
-  std::string nombre = std::filesystem::path(fichero).stem().string();
+// Añade una fila a resultados.csv (con cabecera si el fichero no existe)
+std::string ruta_csv = "resultados.csv";
+bool existe = std::filesystem::exists(ruta_csv);
+std::ofstream csv(ruta_csv, std::ios::app);
+if (!existe) {
+  csv << "instancia,n,m,semilla,cmax,ub,neh,tiempo_cpu\n";
+}
+csv << nombre << "," << instancia.get_trabajos() << "," << instancia.get_maquinas() << ","
+    << semilla << "," << cmax << "," << upper_bound << "," << cmax_neh << ","
+    << std::fixed << std::setprecision(3) << tiempo_cpu << "\n";
 
-  std::cout << nombre << " " << semilla << " " << cmax << std::endl;
-  return 0;
+std::cout << nombre << " " << semilla << " " << cmax << std::endl;
+return 0;
 }

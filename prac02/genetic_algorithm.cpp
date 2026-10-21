@@ -5,6 +5,17 @@ static constexpr int INFINITO = 1000000000;
 GeneticAlgorithm::GeneticAlgorithm(const Instance& instancia, int tam_poblacion, double pc, double pm, int tam_torneo, int max_evaluaciones, unsigned semilla, bool neh) :
   instancia_(instancia), tam_poblacion_(tam_poblacion), prob_cruce_(pc), prob_mutacion_(pm), tam_torneo_(tam_torneo), max_evaluaciones_(max_evaluaciones), generador_(semilla), neh_(neh) {}
 
+int GeneticAlgorithm::evaluar(const std::vector<int>& individuo) {
+  int cmax = instancia_.cmax(individuo);
+  evaluaciones_++;
+  if (cmax < mejor_cmax_) {
+    mejor_cmax_ = cmax;
+    mejor_individuo_ = individuo;
+    historial_.push_back({evaluaciones_, mejor_cmax_});
+  }
+  return cmax;
+}
+
 std::vector<int> GeneticAlgorithm::neh() {
   int n = instancia_.get_trabajos();
   int m = instancia_.get_maquinas();
@@ -29,7 +40,6 @@ std::vector<int> GeneticAlgorithm::neh() {
     for (int pos{0}; pos <= static_cast<int>(secuencia.size()); pos++) {
       secuencia.insert(secuencia.begin() + pos, trabajo);
       int ms = instancia_.cmax(secuencia);
-      evaluaciones_++;
       secuencia.erase(secuencia.begin() + pos);
       if (ms < mejor_ms) {        // en empate se queda la primera posición
         mejor_ms = ms;
@@ -43,31 +53,23 @@ std::vector<int> GeneticAlgorithm::neh() {
 
 
 void GeneticAlgorithm::inicializar() {
-  int pos_mejor{0};
-  int mejorcmax{INFINITO};
+  poblacion_.clear();
+  makespan_.clear();
+
   for (int i{0}; i < tam_poblacion_; i++) {
-    
     std::vector<int> auxiliar;
-    if(neh_ && i == 0) {
-     auxiliar = neh();
+    if (neh_ && i == 0) {
+      auxiliar = neh();
     } else {
       auxiliar.resize(instancia_.get_trabajos());
       std::iota(auxiliar.begin(), auxiliar.end(), 0);
       std::shuffle(auxiliar.begin(), auxiliar.end(), generador_);
     }
 
-    int cmax_temp = instancia_.cmax(auxiliar);
-    if (cmax_temp < mejorcmax) {
-      pos_mejor = i;
-      mejorcmax = cmax_temp;
-    }
-
+    int cmax_temp = evaluar(auxiliar);   // cuenta la evaluación y actualiza el mejor
     poblacion_.push_back(auxiliar);
     makespan_.push_back(cmax_temp);
-    evaluaciones_++;
   }
-  mejor_individuo_ = poblacion_[pos_mejor];
-  mejor_cmax_ = mejorcmax;
 }
 
 int GeneticAlgorithm::seleccion() {
@@ -231,15 +233,14 @@ std::vector<int> GeneticAlgorithm::run() {
       mutacion(h2);
       assert(es_factible(hijos_[h2]));
 
-      makespans_hijos_.push_back(instancia_.cmax(hijos_[h1]));
-      evaluaciones_++;
-      makespans_hijos_.push_back(instancia_.cmax(hijos_[h2]));
-      evaluaciones_++;
+      makespans_hijos_.push_back(evaluar(hijos_[h1]));   // cambio: evaluar() en vez de cmax + evaluaciones_++
+      makespans_hijos_.push_back(evaluar(hijos_[h2]));
     }
 
+    // Presupuesto agotado a mitad de generación: no se reemplaza,
+    // pero el mejor ya está guardado porque evaluar() lo actualiza
     if (hijos_.size() < static_cast<std::size_t>(tam_poblacion_)) break;
 
-    // Por si el tamaño de la población es impar
     hijos_.resize(tam_poblacion_);
     makespans_hijos_.resize(tam_poblacion_);
 
