@@ -19,4 +19,5 @@ add_executable(pfsp
   main.cpp
   instance.cpp
   genetic_algorithm.cpp
+  random_search.cpp
 )
