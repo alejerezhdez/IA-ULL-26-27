@@ -8,7 +8,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 INSTANCIAS = ["tai50_10_0", "tai200_20_0"]
-N, PC, PM, TORNEO, PRESUPUESTO = 50, 0.8, 0.1, 2, 50000   # pon aquí la configuración final de la T5
+N, PC, PM, TORNEO, PRESUPUESTO = 50, 0.8, 0.4, 2, 50000   # pon aquí la configuración final de la T5
 SEMILLAS = range(1, 11)
 
 EXE = next((os.path.abspath(p) for p in ["build/pfsp.exe", "build/Release/pfsp.exe",

@@ -40,6 +40,7 @@ std::vector<int> GeneticAlgorithm::neh() {
     for (int pos{0}; pos <= static_cast<int>(secuencia.size()); pos++) {
       secuencia.insert(secuencia.begin() + pos, trabajo);
       int ms = instancia_.cmax(secuencia);
+      evaluaciones_++;
       secuencia.erase(secuencia.begin() + pos);
       if (ms < mejor_ms) {        // en empate se queda la primera posición
         mejor_ms = ms;
